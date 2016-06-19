@@ -1,8 +1,9 @@
 // 引入fs文件处理模块
 var fs = require("fs");
 // 测试用的HTML页面文件夹地址、文件名称
-var src = "import";
+var src = "src";
 var filename = "import-example.html";
+var tar = "dist";
 var fnImportExample = function(src, filename){
 	// 读取HTML 页面内容
 	// 使用 fs.readFile(filename, [options], callback)
@@ -11,20 +12,22 @@ var fnImportExample = function(src, filename){
 		encoding: "utf8"
 	}, function(err, data){
 		// 把HTML替换成href文件中的内容
-		var dataReplace = data.replace(/fd/gi, function(matchs, m1){
-			// m1 就是匹配的路径地址
+		// 替换[<link rel="import" href="import-example.html">]
+		var dataReplace = data.replace(/<link\s+rel=["']import["']\s+href=["'](.*)["']\s*>/gi, function(matchs, href){
+			// href 就是匹配的路径地址
 			// 读文件，返回文件内容
-			return fs.readFileSync(src + "/" + m1, {
+			return fs.readFileSync(src + "/" + href, {
 				encoding: "utf8"
 			});
 		});
 		// 由于我们把文件放在更上一层目录，因此，一些相对地址需要处理
 		// 本例中，对["..]进行替换
-		dataReplace = dataReplace.replace(/"..//g, "");
+		dataReplace = dataReplace.replace(/"..\//g, "");
+		console.log("dataReplace:"+dataReplace+"\n\n");
 
 		// 生成新的HTML文件
 		// fs.writeFile(filename, data, [options], callback)
-		fs.writeFile(filename, dataReplace, {
+		fs.writeFile(tar + "/" + filename, dataReplace, {
 			encoding: "utf8"
 		}, function(err){
 			if(err){throw err;}
