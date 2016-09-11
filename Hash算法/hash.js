@@ -2,7 +2,7 @@ var crypto = require('crypto'),
     readline = require('readline'),
     fs = require('fs');
 
-var args = ['sha256', 'RSA-SHA256'];    // 定义所要计算的算法
+var args = ['sha256', 'RSA-SHA256', 'md5'];    // 定义所要计算的算法
 var arr_path = [];                      // 用来存储文件路径
 //创建readline接口实例
 var rl = readline.createInterface({
